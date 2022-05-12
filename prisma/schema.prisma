@@ -1,0 +1,103 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "cockroachdb"
+    url      = env("DATABASE_URL")
+}
+
+model Permission {
+    id                BigInt             @id(map: "primary") @default(autoincrement())
+    name              String
+    permissionDetails PermissionDetail[]
+    userPermissions   UserPermission[]
+}
+
+model PermissionDetail {
+    id           BigInt      @id(map: "primary") @default(autoincrement())
+    permission   Permission? @relation(fields: [permissionId], references: [id])
+    permissionId BigInt?
+    code         String
+}
+
+model UserPermission {
+    id           BigInt      @id(map: "primary") @default(autoincrement())
+    permission   Permission? @relation(fields: [permissionId], references: [id])
+    permissionId BigInt?
+    user         User?       @relation(fields: [userId], references: [id])
+    userId       BigInt?
+}
+
+enum Role {
+    Student
+    Employer
+}
+
+model User {
+    id              BigInt           @id(map: "primary") @default(autoincrement())
+    firstName       String
+    lastName        String
+    email           String           @unique
+    password        String
+    phoneNumber     String
+    role            Role             @default(Student)
+    userPermissions UserPermission[]
+    students        Student[]
+    employers       Employer[]
+}
+
+model Student {
+    id               BigInt             @id(map: "primary") @default(autoincrement())
+    generalInfo      Int
+    yearExperience   Int
+    wantedJobField   Json
+    jobApplied       Json
+    jobAppliedStatus JobAppliedStatus[]
+    cv               Bytes[]
+    user             User?              @relation(fields: [userId], references: [id])
+    userId           BigInt?
+}
+
+model Employer {
+    id     BigInt  @id(map: "primary") @default(autoincrement())
+    user   User?   @relation(fields: [userId], references: [id])
+    userId BigInt?
+}
+
+enum EmploymentStatus {
+    FullTime
+    PartTime
+}
+
+model Job {
+    id               BigInt             @id(map: "primary") @default(autoincrement())
+    name             String
+    salary           Int
+    field            String
+    employmentStatus EmploymentStatus
+    experienceNeeded Int
+    description      String
+    createdAt        DateTime           @default(now())
+    jobAppliedStatus JobAppliedStatus[]
+}
+
+enum JobStatus {
+    PENDING
+    ACCEPT
+    WAITING
+    REFUSE
+}
+
+model JobAppliedStatus {
+    id        BigInt    @id(map: "primary") @default(autoincrement())
+    student   Student?  @relation(fields: [studentId], references: [id])
+    studentId BigInt?
+    job       Job?      @relation(fields: [jobId], references: [id])
+    jobId     BigInt?
+    appliedAt DateTime  @default(now())
+    status    JobStatus @default(PENDING)
+}
