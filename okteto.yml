@@ -28,7 +28,7 @@ deploy:
 # More info: https://www.okteto.com/docs/reference/manifest/#dev
 dev:
     job-system-backend:
-        image: okteto.dev/job-system-backend:latest
+        image: registry.cloud.okteto.net/cpea2506/job-system-backend-job-system-backend:okteto
         command: yarn dev
         sync:
             - .:/usr/src/app

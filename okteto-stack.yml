@@ -1,8 +1,0 @@
-services:
-    job-system-backend:
-        public: true
-        image: okteto.dev/job-system-backend:latest
-        build: .
-        replicas: 1
-        ports:
-            - 5001

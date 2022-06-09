@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-    name: job-system-backend
+    name: job-system-backend-deploy
 spec:
     replicas: 1
     selector:
@@ -26,7 +26,7 @@ metadata:
 spec:
     type: ClusterIP
     ports:
-        - name: "job-system-backend-service"
+        - name: "job-system-backend"
           port: 5001
     selector:
         app: job-system-backend
