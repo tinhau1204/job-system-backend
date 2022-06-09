@@ -1,24 +1,18 @@
-import { PrismaClient } from "@prisma/client"
+import express from "express";
+import app from "./config/app";
+import { PORT } from "./config/env";
+import { createServer, Server } from "http";
 
-const prisma = new PrismaClient()
+const http: Server = createServer(app);
 
-async function main() {
-    await prisma.user.create({
-        data: {
-            firstName: "Do",
-            lastName: "Vien",
-            email: "vienpro2506@gmail.com",
-            password: "anhvien1",
-            phoneNumber: "0705390759",
-            role: "Student",
-        }
-    })
-    const allUsers = await prisma.user.findMany();
-    console.log(allUsers)
-}
+app.use(express.json());
 
-main()
-    .catch(e => { throw e })
-    .finally(async () => {
-        await prisma.$disconnect()
-    })
+http.on("error", (error) => {
+    if (error) {
+        throw error;
+    }
+});
+
+http.listen(PORT || 5001, () =>
+    console.log(` 🚀 Server ready at: http://localhost:${PORT || 5001}`),
+);

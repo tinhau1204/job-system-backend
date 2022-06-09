@@ -49,12 +49,12 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "Student" (
     "id" INT8 NOT NULL DEFAULT unique_rowid(),
-    "generalInfo" INT4 NOT NULL,
-    "yearExperience" INT4 NOT NULL,
-    "wantedJobField" JSONB NOT NULL,
-    "jobApplied" JSONB NOT NULL,
+    "generalInfo" STRING,
+    "workingExperience" STRING,
+    "wantedJobField" JSONB,
+    "jobApplied" JSONB,
     "cv" BYTES[],
-    "userId" INT8,
+    "userId" INT8 NOT NULL,
 
     CONSTRAINT "primary" PRIMARY KEY ("id")
 );
@@ -62,7 +62,10 @@ CREATE TABLE "Student" (
 -- CreateTable
 CREATE TABLE "Employer" (
     "id" INT8 NOT NULL DEFAULT unique_rowid(),
-    "userId" INT8,
+    "companyDescription" STRING,
+    "companyName" STRING,
+    "companyAddress" STRING,
+    "userId" INT8 NOT NULL,
 
     CONSTRAINT "primary" PRIMARY KEY ("id")
 );
@@ -72,11 +75,13 @@ CREATE TABLE "Job" (
     "id" INT8 NOT NULL DEFAULT unique_rowid(),
     "name" STRING NOT NULL,
     "salary" INT4 NOT NULL,
+    "place" STRING NOT NULL,
     "field" STRING NOT NULL,
     "employmentStatus" "EmploymentStatus" NOT NULL,
     "experienceNeeded" INT4 NOT NULL,
     "description" STRING NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "employerId" INT8,
 
     CONSTRAINT "primary" PRIMARY KEY ("id")
 );
@@ -105,10 +110,13 @@ ALTER TABLE "UserPermission" ADD CONSTRAINT "UserPermission_permissionId_fkey" F
 ALTER TABLE "UserPermission" ADD CONSTRAINT "UserPermission_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Student" ADD CONSTRAINT "Student_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Employer" ADD CONSTRAINT "Employer_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "Employer" ADD CONSTRAINT "Employer_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Job" ADD CONSTRAINT "Job_employerId_fkey" FOREIGN KEY ("employerId") REFERENCES "Employer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "JobAppliedStatus" ADD CONSTRAINT "JobAppliedStatus_studentId_fkey" FOREIGN KEY ("studentId") REFERENCES "Student"("id") ON DELETE SET NULL ON UPDATE CASCADE;
