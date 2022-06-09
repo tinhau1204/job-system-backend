@@ -14,10 +14,10 @@ build:
 
 # The deploy section defines how to deploy your development environment
 # More info: https://www.okteto.com/docs/reference/manifest/#deploy
-# deploy:
-#   commands:
-#   - name: Deploy
-#     command: echo 'Replace this line with the proper 'helm' or 'kubectl' commands to deploy your development environment'
+deploy:
+    commands:
+        - name: Deploy
+          command: kubectl apply -f k8s.yml
 
 # The dependencies section defines other git repositories to be deployed as part of your development environment
 # More info: https://www.okteto.com/docs/reference/manifest/#dependencies
@@ -28,7 +28,7 @@ build:
 # More info: https://www.okteto.com/docs/reference/manifest/#dev
 dev:
     job-system-backend:
-        image: registry.cloud.okteto.net/cpea2506/job-system-backend-job-system-back-end:okteto
+        image: okteto.dev/job-system-backend:latest
         command: yarn dev
         sync:
             - .:/usr/src/app

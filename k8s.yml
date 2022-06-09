@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+    name: job-system-backend
+spec:
+    replicas: 1
+    selector:
+        matchLabels:
+            app: job-system-backend
+    template:
+        metadata:
+            labels:
+                app: job-system-backend
+        spec:
+            containers:
+                - image: registry.cloud.okteto.net/cpea2506/job-system-backend-job-system-backend:okteto
+                  name: job-system-backend
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+    name: job-system-backend-service
+    annotations:
+        dev.okteto.com/auto-ingress: "true"
+spec:
+    type: ClusterIP
+    ports:
+        - name: "job-system-backend-service"
+          port: 5001
+    selector:
+        app: job-system-backend
