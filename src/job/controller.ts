@@ -52,19 +52,40 @@ export const createJob = async (
     next: NextFunction,
 ) => {
     try {
-        const jobs: Job[] = await PrismaDB.instance.job.findMany();
+        const {
+            name,
+            salary,
+            place,
+            field,
+            employmentStatus,
+            experienceNeeded,
+            description,
+            employerId
+        } = req.body;
 
-        return res.status(200).send({ message: jobs });
+        const job: Pick<Job, "id"> = await PrismaDB.instance.job.create({
+            data: {
+                name,
+                salary,
+                place,
+                field,
+                employmentStatus,
+                experienceNeeded,
+                description,
+                employerId,
+            },
+            select: {
+                id: true
+            }
+        });
+
+        return res.status(200).send({ message: job.id.toString() });
     } catch (error: any) {
         next(error);
         console.log(error.message);
+        return res.status(400).send({
+            message: error.message,
+        });
 
-        if (error instanceof Prisma.PrismaClientKnownRequestError) {
-            if (error.code === "P2002") {
-                return res.status(400).send({
-                    message: "This email has been used.",
-                });
-            }
-        }
     }
 };
