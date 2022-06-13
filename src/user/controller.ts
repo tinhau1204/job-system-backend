@@ -1,5 +1,5 @@
 import PrismaDB from "../database";
-import { Prisma, Role, User } from "@prisma/client";
+import { Employer, Prisma, Role, Student, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 
 export const registerUser = async (
@@ -63,17 +63,12 @@ export const loginUser = async (
     const { email, password } = req.body;
 
     try {
-        const user: Pick<User, "id" | "role"> | null =
-            await PrismaDB.instance.user.findFirst({
-                where: {
-                    email,
-                    password,
-                },
-                select: {
-                    id: true,
-                    role: true,
-                },
-            });
+        const user: User | null = await PrismaDB.instance.user.findFirst({
+            where: {
+                email,
+                password,
+            },
+        });
 
         if (user === null) {
             return res.status(400).send({
@@ -82,7 +77,7 @@ export const loginUser = async (
         }
 
         res.status(200).send({
-            message: { id: user.id.toString(), role: user.role },
+            message: { ...user, id: user.id.toString() },
         });
     } catch (error: any) {
         next(error);
@@ -95,5 +90,61 @@ export const loginUser = async (
                 });
             }
         }
+    }
+};
+
+export const getStudentInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { id } = req.params as any;
+
+    try {
+        const student: Student | null =
+            await PrismaDB.instance.student.findFirst({
+                where: {
+                    id: BigInt(id),
+                },
+            });
+
+        res.status(200).send({
+            message: student,
+        });
+    } catch (error: any) {
+        next(error);
+        console.log(error.message);
+
+        return res.status(400).send({
+            message: error.message,
+        });
+    }
+};
+
+export const getEmployerInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    const { id } = req.params as any;
+
+    try {
+        const employer: Employer | null =
+            await PrismaDB.instance.employer.findFirst({
+                where: {
+                    id: BigInt(id),
+                },
+            });
+
+        res.status(200).send({
+            message: employer,
+        });
+    } catch (error: any) {
+        next(error);
+        console.log(error.message);
+
+        return res.status(400).send({
+            message: error.message,
+        });
     }
 };
