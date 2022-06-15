@@ -1,9 +1,10 @@
 import cors, { CorsOptions } from "cors";
-import express, { Request, Response, Handler } from "express";
-import { errorHandler, logErrors, notFound } from "../middleware/errors";
-import userRouter from "../user/router";
-import morgan from "morgan";
 import CORSWhitelist from "./cors";
+import express, { Request, Response, Handler } from "express";
+import { errorHandler, logErrors, notFound } from "@/middleware/errors";
+import userRouter from "@/user/router";
+import jobRouter from "@/job/router";
+import morgan from "morgan";
 
 const app = express();
 
@@ -18,7 +19,10 @@ app.use(morgan("logger_format") as Handler);
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/api/v1/user", userRouter);
-app.use("/", (_: Request, res: Response) => res.send("Hello cai dmm luon"));
+app.use("/api/v1/job", jobRouter);
+app.use("/", (_: Request, res: Response) =>
+    res.status(400).send("Hello cai dmm luon"),
+);
 app.use(logErrors);
 app.use(errorHandler);
 app.use(notFound);

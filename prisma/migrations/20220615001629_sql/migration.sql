@@ -5,7 +5,7 @@ CREATE TYPE "Role" AS ENUM ('Student', 'Employer');
 CREATE TYPE "EmploymentStatus" AS ENUM ('FullTime', 'PartTime');
 
 -- CreateEnum
-CREATE TYPE "JobStatus" AS ENUM ('PENDING', 'ACCEPT', 'WAITING', 'REFUSE');
+CREATE TYPE "JobStatus" AS ENUM ('Pending', 'Accept', 'Waiting', 'Refuse');
 
 -- CreateTable
 CREATE TABLE "Permission" (
@@ -74,11 +74,12 @@ CREATE TABLE "Employer" (
 CREATE TABLE "Job" (
     "id" INT8 NOT NULL DEFAULT unique_rowid(),
     "name" STRING NOT NULL,
-    "salary" INT4 NOT NULL,
+    "imageUrl" STRING NOT NULL,
+    "salary" STRING NOT NULL,
     "place" STRING NOT NULL,
     "field" STRING NOT NULL,
     "employmentStatus" "EmploymentStatus" NOT NULL,
-    "experienceNeeded" INT4 NOT NULL,
+    "experienceNeeded" STRING NOT NULL,
     "description" STRING NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "employerId" INT8,
@@ -92,7 +93,7 @@ CREATE TABLE "JobAppliedStatus" (
     "studentId" INT8,
     "jobId" INT8,
     "appliedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "status" "JobStatus" NOT NULL DEFAULT E'PENDING',
+    "status" "JobStatus" NOT NULL DEFAULT E'Pending',
 
     CONSTRAINT "primary" PRIMARY KEY ("id")
 );

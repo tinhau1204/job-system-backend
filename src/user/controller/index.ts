@@ -1,6 +1,9 @@
-import PrismaDB from "../database";
-import { Employer, Prisma, Role, Student, User } from "@prisma/client";
+import PrismaDB from "@/database";
+import { Prisma, Role, User } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
+
+export * from "./student";
+export * from "./employer";
 
 export const registerUser = async (
     req: Request,
@@ -9,7 +12,7 @@ export const registerUser = async (
 ) => {
     const { email, firstName, lastName, password, role, phoneNumber }: User =
         req.body;
-    console.log(email, firstName);
+
     try {
         const user: Pick<User, "id"> = await PrismaDB.instance.user.create({
             data: {
@@ -90,61 +93,5 @@ export const loginUser = async (
                 });
             }
         }
-    }
-};
-
-export const getStudentInfo = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    const { id } = req.params as any;
-
-    try {
-        const student: Student | null =
-            await PrismaDB.instance.student.findFirst({
-                where: {
-                    id: BigInt(id),
-                },
-            });
-
-        res.status(200).send({
-            message: student,
-        });
-    } catch (error: any) {
-        next(error);
-        console.log(error.message);
-
-        return res.status(400).send({
-            message: error.message,
-        });
-    }
-};
-
-export const getEmployerInfo = async (
-    req: Request,
-    res: Response,
-    next: NextFunction,
-) => {
-    const { id } = req.params as any;
-
-    try {
-        const employer: Employer | null =
-            await PrismaDB.instance.employer.findFirst({
-                where: {
-                    id: BigInt(id),
-                },
-            });
-
-        res.status(200).send({
-            message: employer,
-        });
-    } catch (error: any) {
-        next(error);
-        console.log(error.message);
-
-        return res.status(400).send({
-            message: error.message,
-        });
     }
 };

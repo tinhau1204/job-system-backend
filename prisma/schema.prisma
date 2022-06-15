@@ -80,23 +80,24 @@ enum EmploymentStatus {
 model Job {
     id               BigInt             @id(map: "primary") @default(autoincrement())
     name             String
-    salary           Int
+    imageUrl         String
+    salary           String
     place            String
     field            String
     employmentStatus EmploymentStatus
-    experienceNeeded Int
+    experienceNeeded String
     description      String
     createdAt        DateTime           @default(now())
     jobAppliedStatus JobAppliedStatus[]
-    Employer         Employer?          @relation(fields: [employerId], references: [id])
-    employerId       BigInt?
+    employer         Employer?          @relation(fields: [employerId], references: [id])
+    employerId       BigInt
 }
 
 enum JobStatus {
-    PENDING
-    ACCEPT
-    WAITING
-    REFUSE
+    Pending
+    Accept
+    Waiting
+    Refuse
 }
 
 model JobAppliedStatus {
@@ -106,5 +107,5 @@ model JobAppliedStatus {
     job       Job?      @relation(fields: [jobId], references: [id])
     jobId     BigInt?
     appliedAt DateTime  @default(now())
-    status    JobStatus @default(PENDING)
+    status    JobStatus @default(Pending)
 }

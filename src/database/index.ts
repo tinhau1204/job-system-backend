@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client";
 
-class PrismaDB extends PrismaClient {
+export default class PrismaDB extends PrismaClient {
     private static _instance: PrismaDB = new PrismaClient({
         errorFormat: "pretty",
+        log: ["info"],
+        rejectOnNotFound: false,
     });
 
     private constructor() {
@@ -13,5 +15,3 @@ class PrismaDB extends PrismaClient {
         return PrismaDB._instance;
     }
 }
-
-export default PrismaDB;

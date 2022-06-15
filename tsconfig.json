@@ -1,5 +1,6 @@
 {
     "compilerOptions": {
+        "baseUrl": "./",
         "target": "esnext",
         "sourceMap": true,
         "outDir": "dist",
@@ -8,6 +9,18 @@
             "esnext"
         ],
         "moduleResolution": "nodenext",
-        "esModuleInterop": true
-    }
+        "esModuleInterop": true,
+        "paths": {
+            "@/*": [
+                "src/*"
+            ]
+        }
+    },
+    "include": [
+        "src",
+        "**/*.{ts, tsx}"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
 }
