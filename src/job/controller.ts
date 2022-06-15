@@ -72,46 +72,48 @@ export const getAllJobByStudent = async (
 ) => {
     const { id } = req.params as any;
 
-    const student: Pick<Student, "id"> | null =
-        await PrismaDB.instance.student.findFirst({
-            where: {
-                userId: BigInt(id),
-            },
-            select: {
-                id: true,
-            },
-        });
+    if (id !== "undefined") {
+        const student: Pick<Student, "id"> | null =
+            await PrismaDB.instance.student.findFirst({
+                where: {
+                    userId: BigInt(id),
+                },
+                select: {
+                    id: true,
+                },
+            });
 
-    try {
-        let jobs = await PrismaDB.instance.jobAppliedStatus.findMany({
-            where: {
-                studentId: student!.id,
-            },
-            include: {
-                job: {
-                    select: {
-                        name: true,
-                        imageUrl: true,
+        try {
+            let jobs = await PrismaDB.instance.jobAppliedStatus.findMany({
+                where: {
+                    studentId: student!.id,
+                },
+                include: {
+                    job: {
+                        select: {
+                            name: true,
+                            imageUrl: true,
+                        },
                     },
                 },
-            },
-        });
+            });
 
-        return res.status(200).send({
-            message: jobs.map((jobApplied, _) => ({
-                imageUrl: jobApplied.job!.imageUrl,
-                status: jobApplied.status,
-                name: jobApplied.job!.name,
-                appliedAt: jobApplied.appliedAt,
-            })),
-        });
-    } catch (error: any) {
-        next(error);
-        console.log(error.message);
+            return res.status(200).send({
+                message: jobs.map((jobApplied, _) => ({
+                    imageUrl: jobApplied.job!.imageUrl,
+                    status: jobApplied.status,
+                    name: jobApplied.job!.name,
+                    appliedAt: jobApplied.appliedAt,
+                })),
+            });
+        } catch (error: any) {
+            next(error);
+            console.log(error.message);
 
-        return res.status(400).send({
-            message: error.message,
-        });
+            return res.status(400).send({
+                message: error.message,
+            });
+        }
     }
 };
 
